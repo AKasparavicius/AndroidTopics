@@ -20,9 +20,11 @@
         android:id="@+id/firstButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open"
-        android:layout_margin="32dp"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-         />
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="Open" />
 </RelativeLayout>
