@@ -52,6 +52,7 @@ class SecondActivity : AppCompatActivity() {
             putString(SECOND_ACTIVITY_KEY_ITEM_ID, idEditText.text.toString())
             putString(SECOND_ACTIVITY_KEY_ITEM_TEXT01, text01EditText.text.toString())
             putString(SECOND_ACTIVITY_KEY_ITEM_TEXT02, text02EditText.text.toString())
+            putInt(SECOND_ACTIVITY_ITEM_FINISH_INTENT_STATUS, finishIntentStatus)
         }
         super.onSaveInstanceState(outState)
     }
@@ -66,6 +67,7 @@ class SecondActivity : AppCompatActivity() {
             idEditText.setText(this?.getString(SECOND_ACTIVITY_KEY_ITEM_ID))
             text01EditText.setText(this?.getString(SECOND_ACTIVITY_KEY_ITEM_TEXT01))
             text02EditText.setText(this?.getString(SECOND_ACTIVITY_KEY_ITEM_TEXT02))
+            finishIntentStatus = this?.getInt(SECOND_ACTIVITY_ITEM_FINISH_INTENT_STATUS) ?: -1
         }
     }
     private fun getIntentExtra() {
@@ -105,6 +107,9 @@ class SecondActivity : AppCompatActivity() {
         const val SECOND_ACTIVITY_KEY_ITEM_ID = "lt.arnas.androidtopics.secondactivity_item_id"
         const val SECOND_ACTIVITY_KEY_ITEM_TEXT01 = "lt.arnas.androidtopics.secondactivity_item_text01"
         const val SECOND_ACTIVITY_KEY_ITEM_TEXT02 = "lt.arnas.androidtopics.secondactivity_item_text02"
+        const val SECOND_ACTIVITY_ITEM_FINISH_INTENT_STATUS =
+            "lt.arnas.androidtopics.secondactivity_finish_intent_status"
+
 
         const val SECOND_ACTIVITY_ITEM_INTENT_RETURN_NEW = 101
 

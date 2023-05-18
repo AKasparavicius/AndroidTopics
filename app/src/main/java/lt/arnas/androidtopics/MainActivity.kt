@@ -54,6 +54,18 @@ class MainActivity : ActivityLifeCycles() {
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        timber("onSaveInstanceState \nindex value is $itemIndex")
+        outState.putInt(MAIN_ACTIVITY_SAVE_INSTANCE_STATE_ITEM_INDEX, itemIndex)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        timber("onRestoreInstanceState \nindex value is $itemIndex")
+        itemIndex = savedInstanceState.getInt(MAIN_ACTIVITY_SAVE_INSTANCE_STATE_ITEM_INDEX)
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
     private fun setUpListView() {
         adapter = CustomAdapter(this)
         binding.itemListView.adapter = adapter
@@ -135,6 +147,8 @@ class MainActivity : ActivityLifeCycles() {
         const val MAIN_ACTIVITY_KEY_ITEM_ID = "lt.arnas.androidtopics_item_id"
         const val MAIN_ACTIVITY_KEY_ITEM_TEXT01 = "lt.arnas.androidtopics_item_text01"
         const val MAIN_ACTIVITY_KEY_ITEM_TEXT02 = "lt.arnas.androidtopics_item_text02"
+        const val MAIN_ACTIVITY_SAVE_INSTANCE_STATE_ITEM_INDEX =
+            "lt.arnas.androidtopics_save_instance_state_item_index"
     }
 
 }
