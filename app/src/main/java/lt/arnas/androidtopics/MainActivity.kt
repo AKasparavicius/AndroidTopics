@@ -58,6 +58,7 @@ class MainActivity : ActivityLifeCycles() {
         setClickOpenSecondActivity()
 
         // comment just for merging purpose: commit01
+        // code from dev branch
     }
 
     private fun setUpListView() {
