@@ -57,6 +57,7 @@ class MainActivity : ActivityLifeCycles() {
         setClickOpenItemDetails()
         setClickOpenSecondActivity()
 
+        // code from dev branch
     }
 
     private fun setUpListView() {
