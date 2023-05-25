@@ -13,6 +13,7 @@ import lt.arnas.androidtopics.databinding.ActivitySecondBinding
 
 class SecondActivity : AppCompatActivity() {
 
+
     private lateinit var binding: ActivitySecondBinding
     private var finishIntentStatus = SECOND_ACTIVITY_ITEM_INTENT_RETURN_UPDATE
 
