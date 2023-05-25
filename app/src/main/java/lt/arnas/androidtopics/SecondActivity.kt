@@ -26,6 +26,8 @@ class SecondActivity : AppCompatActivity() {
         binding.secondActivity = this
 
         getIntentExtra()
+
+        // comment just for merging purpose: commit02
     }
 
 
