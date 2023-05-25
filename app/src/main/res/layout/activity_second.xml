@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".SecondActivity">
+
+    <data>
+
+        <variable
+            name="item"
+            type="lt.arnas.androidtopics.Item" />
+
+        <variable
+            name="secondActivity"
+            type="lt.arnas.androidtopics.SecondActivity" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,13 +28,15 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <EditText
+        <TextView
             android:id="@+id/idEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:text="id"
+            android:hint="id"
+            android:text="@{String.valueOf(item.id)}"
+            android:saveEnabled="false"
             android:textSize="20sp" />
 
         <EditText
@@ -30,7 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:text="text01"
+            android:hint="text01"
+            android:text="@={item.text01}"
+            android:saveEnabled="false"
             android:textSize="20sp" />
 
         <EditText
@@ -39,7 +56,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:text="text02"
+            android:hint="text02"
+            android:text="@={item.text02}"
+            android:saveEnabled="false"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -48,20 +67,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginEnd="32dp" >
+        android:layout_marginBottom="32dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/closeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Close" />
+        <Button
+            android:id="@+id/closeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:onClick="@{secondActivity::onClickCloseButton}"
+            android:text="Close" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="save" />
-
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->secondActivity.onClickSaveButton()}"
+            android:text="Save" />
     </LinearLayout>
-
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

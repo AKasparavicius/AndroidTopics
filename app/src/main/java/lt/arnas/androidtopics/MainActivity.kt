@@ -3,6 +3,7 @@ package lt.arnas.androidtopics
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -14,9 +15,10 @@ import timber.log.Timber
 
 class MainActivity : ActivityLifeCycles() {
 
-//    private lateinit var firstButton: Button
+    //    private lateinit var firstButton: Button
     private lateinit var adapter: CustomAdapter
-//    private lateinit var itemListView: ListView
+
+    //    private lateinit var itemListView: ListView
     private var itemIndex = -1
     private lateinit var binding: ActivityMainBinding
 
@@ -34,7 +36,7 @@ class MainActivity : ActivityLifeCycles() {
         val items = mutableListOf<Item>()
         generateListOfItems(items)
 
-        for (item in items){
+        for (item in items) {
             Timber.i(item.toString())
         }
 
@@ -48,28 +50,33 @@ class MainActivity : ActivityLifeCycles() {
 //            Item(105, "text01", "text02"),
 //        )
 //        itemListView.adapter = adapter
+        generateListOfItems(items)
         setUpListView()
+        addElements()
         openSecondActivity()
         setClickOpenItemDetails()
+        setClickOpenSecondActivity()
 
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        timber("onSaveInstanceState \nindex value is $itemIndex")
-        outState.putInt(MAIN_ACTIVITY_SAVE_INSTANCE_STATE_ITEM_INDEX, itemIndex)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        timber("onRestoreInstanceState \nindex value is $itemIndex")
-        itemIndex = savedInstanceState.getInt(MAIN_ACTIVITY_SAVE_INSTANCE_STATE_ITEM_INDEX)
-        super.onRestoreInstanceState(savedInstanceState)
     }
 
     private fun setUpListView() {
         adapter = CustomAdapter(this)
         binding.itemListView.adapter = adapter
+    }
 
+    private fun generateListOfItems(items: MutableList<Item>) {
+        for (item in 1..10) {
+            items.add(
+                Item(
+                    item,
+                    "Text01_%04x".format(item),
+                    "Text02_%06x".format(item)
+                )
+            )
+        }
+    }
+
+    private fun addElements() {
         adapter.add(Item(101, "text01", "text02"))
         adapter.add(
             Item(102, "text01", "text02"),
@@ -79,77 +86,63 @@ class MainActivity : ActivityLifeCycles() {
         )
     }
 
-
-    private fun openSecondActivity(){
+    private fun openSecondActivity() {
         binding.firstButton.setOnClickListener {
-//            val intent = Intent(this, SecondActivity::class.java)
-//            startActivity(intent)
             startActivityForResult.launch(Intent(this, SecondActivity::class.java))
+        }
+    }
+
+    private fun setClickOpenSecondActivity() {
+        binding.firstButton.setOnClickListener {
+            val intent = Intent(this, SecondActivity::class.java)
+            val id = adapter.getMaxId().inc()
+            intent.putExtra(MAIN_ACTIVITY_ITEM_INTENT_ID, id)
+
+            startActivityForResult.launch(intent)
         }
     }
 
     private fun setClickOpenItemDetails() {
         binding.itemListView.setOnItemClickListener { adapterView, view, position, l ->
             val item: Item = adapterView.getItemAtPosition(position) as Item
-            itemIndex = position
 
             val itemIntent = Intent(this, SecondActivity::class.java)
-            itemIntent.putExtra(MAIN_ACTIVITY_KEY_ITEM_ID, item.id)
-            itemIntent.putExtra(MAIN_ACTIVITY_KEY_ITEM_TEXT01, item.text01)
-            itemIntent.putExtra(MAIN_ACTIVITY_KEY_ITEM_TEXT02, item.text02)
+            itemIntent.putExtra(MAIN_ACTIVITY_ITEM_INTENT_OBJECT, item)
 
-//            startActivity(itemIntent)
             startActivityForResult.launch(itemIntent)
         }
     }
 
-    private fun generateListOfItems(items: MutableList<Item>) {
-        for (item in 1..10){
-            items.add(
-                Item(
-                    item,
-                    "Text01_%04x".format(item),
-                    "Text02_%06x".format(item))
-            )
-        }
-    }
-
     private val startActivityForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-            when(result.resultCode){
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resul ->
+
+            val item: Item?
+
+            when (resul.resultCode) {
                 SecondActivity.SECOND_ACTIVITY_ITEM_INTENT_RETURN_NEW -> {
-                    val item = Item(
-                        id = 111,
-                        text01 = result.data
-                            ?.getStringExtra(SecondActivity.SECOND_ACTIVITY_KEY_ITEM_TEXT01) ?: "",
-                        text02 = result.data
-                            ?.getStringExtra(SecondActivity.SECOND_ACTIVITY_KEY_ITEM_TEXT02) ?: ""
+                    item = getExtraFromParcelable(
+                        resul.data,
+                        SecondActivity.SECOND_ACTIVITY_ITEM_INTENT_RETURN_OBJECT
                     )
-                    adapter.add(item)
-                }
-                SecondActivity.SECOND_ACTIVITY_ITEM_INTENT_RETURN_UPDATE -> {
-                    val item = Item(
-                        id = result.data
-                            ?.getIntExtra(SecondActivity.SECOND_ACTIVITY_KEY_ITEM_ID, 0) ?: 0,
-                        text01 = result.data
-                            ?.getStringExtra(SecondActivity.SECOND_ACTIVITY_KEY_ITEM_TEXT01) ?: "",
-                        text02 = result.data
-                            ?.getStringExtra(SecondActivity.SECOND_ACTIVITY_KEY_ITEM_TEXT02) ?: ""
-                    )
-                    if(itemIndex >= 0) {
-                        adapter.update(itemIndex, item)
+
+                    if (item != null) {
+                        adapter.add(item)
                     }
+                }
+
+                SecondActivity.SECOND_ACTIVITY_ITEM_INTENT_RETURN_UPDATE -> {
+                    item = getExtraFromParcelable(
+                        resul.data,
+                        SecondActivity.SECOND_ACTIVITY_ITEM_INTENT_RETURN_OBJECT
+                    )
+                    adapter.update(item)
                 }
             }
         }
-    companion object{
-        const val MAIN_ACTIVITY_KEY_ITEM_ID = "lt.arnas.androidtopics_item_id"
-        const val MAIN_ACTIVITY_KEY_ITEM_TEXT01 = "lt.arnas.androidtopics_item_text01"
-        const val MAIN_ACTIVITY_KEY_ITEM_TEXT02 = "lt.arnas.androidtopics_item_text02"
-        const val MAIN_ACTIVITY_SAVE_INSTANCE_STATE_ITEM_INDEX =
-            "lt.arnas.androidtopics_save_instance_state_item_index"
-    }
 
+    companion object {
+        const val MAIN_ACTIVITY_ITEM_INTENT_ID = "package lt.vcs.androidtopics_item_intent_object"
+        const val MAIN_ACTIVITY_ITEM_INTENT_OBJECT = "package lt.vcs.androidtopics_item_intent_id"
+    }
 }
 

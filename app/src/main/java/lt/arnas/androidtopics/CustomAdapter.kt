@@ -13,6 +13,12 @@ class CustomAdapter(context: Context) : BaseAdapter() {
     private val inflater = LayoutInflater.from(context)
     private val list = mutableListOf<Item>()
 
+    fun getMaxId() = if(list.isEmpty()){
+        -1
+    }else{
+        list.maxBy { item -> item.id }.id
+    }
+
     fun add(vararg item: Item){
         list.addAll(item)
         notifyDataSetChanged()
@@ -23,9 +29,14 @@ class CustomAdapter(context: Context) : BaseAdapter() {
         notifyDataSetChanged()
     }
 
-    fun update(index: Int, item: Item){
-        list.set(index, item)
-        notifyDataSetChanged()
+    fun update(item: Item?) {
+        if (item != null) {
+            val index = list.indexOfFirst { it.id == item.id }
+            if (index >= 0) {
+                list[index] = item
+                notifyDataSetChanged()
+            }
+        }
     }
 
     fun clear(){
@@ -44,7 +55,6 @@ class CustomAdapter(context: Context) : BaseAdapter() {
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-//        val view = convertView ?: inflater.inflate(R.layout.item, parent, false)
         var view = convertView
         var binding: ItemBinding
 
@@ -56,13 +66,11 @@ class CustomAdapter(context: Context) : BaseAdapter() {
             binding = view.tag as ItemBinding
         }
 
-//        view.findViewById<TextView>(R.id.idTextView).text = list[position].id.toString()
-//        view.findViewById<TextView>(R.id.idTextView).text = list[position].id.toString()
-//        view.findViewById<TextView>(R.id.idTextView).text = list[position].id.toString()
-
         binding.idTextView.text = list[position].id.toString()
         binding.text01TextView.text = list[position].text01
         binding.text02TextView.text = list[position].text02
+        binding.creationDateTextView.text = list[position].creationDate.toString()
+        binding.updateDateTextView.text = list[position].updateDate.toString()
 
         return view
     }
