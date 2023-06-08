@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import lt.arnas.androidtopics.R
+import lt.arnas.androidtopics.common.MainActivity
 import lt.arnas.androidtopics.databinding.FragmentFirstBinding
 import lt.arnas.androidtopics.databinding.FragmentSecondBinding
 import lt.arnas.androidtopics.first_fragment.FirstFragmentViewModel
@@ -27,6 +28,11 @@ class SecondFragment : FragmentLifecyclesPresentation() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).supportFragmentManager.fragments
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -34,6 +40,7 @@ class SecondFragment : FragmentLifecyclesPresentation() {
 
 
     companion object {
+        const val TAG = "second_fragment"
         fun newInstance() = SecondFragment()
     }
 

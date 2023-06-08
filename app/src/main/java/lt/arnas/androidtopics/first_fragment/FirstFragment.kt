@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import lt.arnas.androidtopics.R
+import lt.arnas.androidtopics.common.MainActivity
 import lt.arnas.androidtopics.databinding.FragmentFirstBinding
+import lt.arnas.androidtopics.second_fragment.SecondFragment
 import lt.vcs.demoapp.common.FragmentLifecyclesPresentation
 
 class FirstFragment : FragmentLifecyclesPresentation() {
@@ -19,7 +21,7 @@ class FirstFragment : FragmentLifecyclesPresentation() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -36,20 +38,16 @@ class FirstFragment : FragmentLifecyclesPresentation() {
 
     private fun onClickOpenButton() {
         binding.openSecondFragmentButton.setOnClickListener {
-            supportFragmentManager.commit {
-                replace(
-                    R.id.fragmentContainerView,
-                    FirstFragment.newInstance(),
-                    "first_fragment"
-                )
-                setReorderingAllowed(true)
-            }
+//            val mainActivity = activity as MainActivity
+//            mainActivity.openFragment()
+
+            (activity as MainActivity).openFragment(SecondFragment.newInstance(), SecondFragment.TAG)
         }
     }
 
 
     companion object {
-
+        const val TAG = "first_fragment"
         fun newInstance() = FirstFragment()
     }
 
