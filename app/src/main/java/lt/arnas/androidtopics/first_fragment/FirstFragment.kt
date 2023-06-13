@@ -4,24 +4,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import lt.arnas.androidtopics.R
-import lt.vcs.demoapp.common.FragmentLifecyclesPresentation
+import lt.arnas.androidtopics.databinding.FragmentFirstBinding
 
-class FirstFragment : FragmentLifecyclesPresentation() {
+class FirstFragment : Fragment() {
 
 
     private val viewModel: FirstFragmentViewModel by viewModels()
-
-
-    private lateinit var viewModel: FirstFragmentViewModel
+    private var _binding: FragmentFirstBinding ? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_first, container, false)
+    ): View {
+        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 
     companion object {
 

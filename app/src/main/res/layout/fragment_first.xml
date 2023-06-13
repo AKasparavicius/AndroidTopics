@@ -6,8 +6,24 @@
     tools:context=".first_fragment.FirstFragment">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="FIRST FRAGMENT" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="open"
+        android:id="@+id/openButton"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="32dp"
+        />
+
+
 
 </FrameLayout>
