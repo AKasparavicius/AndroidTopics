@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import lt.arnas.androidtopics.R
 import lt.arnas.androidtopics.databinding.FragmentFirstBinding
 
@@ -23,6 +24,14 @@ class FirstFragment : Fragment() {
     ): View {
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.openButton.setOnClickListener { view ->
+            view.findNavController().navigate(R.id.action_firstFragment_to_secondFragment)
+
+        }
     }
 
     override fun onDestroy() {
