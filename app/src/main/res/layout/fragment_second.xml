@@ -7,11 +7,12 @@
     tools:context=".second_fragment.SecondFragment">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:layout_gravity="center"
-        android:textSize="32sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:text="Second Fragment" />

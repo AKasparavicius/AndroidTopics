@@ -2,6 +2,7 @@ package lt.arnas.androidtopics.common
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import lt.arnas.androidtopics.R
@@ -32,6 +33,7 @@ class MainActivity : ActivityLifecyclesPresentation() {
 //    }
 
     public fun openFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager.setFragmentResult("", bundleOf())
         supportFragmentManager.commit {
             replace(
                 R.id.fragmentContainerView,
