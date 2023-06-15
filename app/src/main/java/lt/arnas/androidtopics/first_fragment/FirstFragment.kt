@@ -1,26 +1,24 @@
 package lt.arnas.androidtopics.first_fragment
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import lt.arnas.androidtopics.R
 import lt.arnas.androidtopics.databinding.FragmentFirstBinding
 
 class FirstFragment : Fragment() {
 
 
     private val viewModel: FirstFragmentViewModel by viewModels()
-    private var _binding: FragmentFirstBinding ? = null
+    private var _binding: FragmentFirstBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -33,6 +31,35 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeTopNewsStateFlow()
+//        viewModel.fetchUsers()
+    }
+
+    private fun observeTopNewsStateFlow() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.topNewsStateFlow.collect { response ->
+                    val list = response?.articles
+
+                    Log.i(TAG, "onViewCreated: $list")
+
+//                    var myText = ""
+
+                    if (list != null) {
+                        val stringBuilder = buildString {
+                            list.forEach { append("$it\n\n") }
+                        }
+
+                        binding.textView.text = stringBuilder
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun userStateFlow() {
 
         viewModel.fetchUsers()
 
@@ -46,7 +73,7 @@ class FirstFragment : Fragment() {
 
 //                    var myText = ""
 
-                    if (list != null){
+                    if (list != null) {
 //                        for(item in list){
 //                            myText += "${item}\n\n"
 //                        }
@@ -69,8 +96,4 @@ class FirstFragment : Fragment() {
         const val TAG = "my_first_fragment"
 
         fun newInstance() = FirstFragment()
-    }
-
-
-
-}
+    }}
