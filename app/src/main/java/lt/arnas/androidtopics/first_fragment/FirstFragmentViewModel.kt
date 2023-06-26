@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import lt.arnas.androidtopics.repository.reqres.ReqresServiceClient
 import lt.arnas.androidtopics.repository.reqres.UsersResponse
 import lt.arnas.androidtopics.repository.reqres.news_api.NewsApiServiceClient
+import lt.arnas.androidtopics.repository.reqres.news_api.NewsApiServiceClientWithOkHttp
 import lt.arnas.androidtopics.repository.reqres.news_api.TopHeadlinesResponse
 
 class FirstFragmentViewModel : ViewModel() {
@@ -26,9 +27,11 @@ class FirstFragmentViewModel : ViewModel() {
         }
     }
 
-    fun fetchTopNews(){
+    fun fetchTopNews(pageSize: Int = 20){
         viewModelScope.launch(Dispatchers.IO) {
-            val resp = NewsApiServiceClient.providesApiService().getTopNews("us")
+//            val resp = NewsApiServiceClient.providesApiService().getTopNews("us")
+            val resp = NewsApiServiceClientWithOkHttp.providesApiService().getTopNews(
+                country = "us", pageSize = pageSize)
             _topNewsStateFlow.value = resp.body()
         }
     }

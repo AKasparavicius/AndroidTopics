@@ -3,6 +3,7 @@ package lt.arnas.androidtopics.first_fragment
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
+import android.view.CollapsibleActionView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +12,22 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import lt.arnas.androidtopics.common.MainActivity
 import lt.arnas.androidtopics.databinding.FragmentFirstBinding
+import lt.arnas.androidtopics.first_fragment.recycleview.CustomAdapter
+import lt.arnas.androidtopics.repository.reqres.news_api.Article
 
 class FirstFragment : Fragment() {
 
 
     private val viewModel: FirstFragmentViewModel by viewModels()
+    private var recyclerAdapter: CustomAdapter? = null
     private var _binding: FragmentFirstBinding? = null
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,27 +38,69 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        clickOpenButton()
         observeTopNewsStateFlow()
+        setUpRecyclerView()
+        onArticlesRefreshListener()
 //        viewModel.fetchUsers()
     }
 
+    private fun clickOpenButton() {
+        binding.openButton.setOnClickListener {
+            (activity as MainActivity).openSecondFragment()
+        }
+    }
+
+    private fun setUpRecyclerView() {
+        binding.articleRecyclerView.apply {
+            recyclerAdapter = CustomAdapter { article -> onArticlesItemClick(article) }
+            adapter = recyclerAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        }
+    }
+    private fun onArticlesItemClick(article: Article) {
+        Snackbar
+            .make(binding.openButton, "Clicked ${article.title}", Snackbar.LENGTH_LONG)
+            .show()
+    }
+    private fun submitArticleList(list: List<Article>) {
+        recyclerAdapter?.submitList(list)
+        binding.articleRecyclerView.adapter = recyclerAdapter
+    }
+    private fun onArticlesRefreshListener() {
+        binding.swipeArticleRefreshLayout.setOnRefreshListener {
+            viewModel.fetchTopNews(40)
+            isSwipeRefreshing(true)
+        }
+    }
+
+    private fun isSwipeRefreshing(isEnabled: Boolean) {
+        binding.swipeArticleRefreshLayout.isRefreshing = isEnabled
+    }
+
     private fun observeTopNewsStateFlow() {
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 viewModel.topNewsStateFlow.collect { response ->
+
                     val list = response?.articles
+                    viewModel.fetchTopNews()
 
                     Log.i(TAG, "onViewCreated: $list")
 
 //                    var myText = ""
 
                     if (list != null) {
-                        val stringBuilder = buildString {
-                            list.forEach { append("$it\n\n") }
-                        }
+//                        val stringBuilder = buildString {
+//                            list.forEach { append("$it\n\n") }
+//                        }
 
-                        binding.textView.text = stringBuilder
+//                        binding.textView.text = stringBuilder
+                        submitArticleList(list)
+                        isSwipeRefreshing(false)
                     }
                 }
             }
@@ -81,7 +130,7 @@ class FirstFragment : Fragment() {
                             list.forEach { append("$it\n\n") }
                         }
 
-                        binding.textView.text = stringBuilder
+//                        binding.textView.text = stringBuilder
                     }
                 }
             }
